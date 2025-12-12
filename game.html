@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎉 เกมปาร์ตี้วงเหล้า</title>
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+    touch-action: manipulation;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.screen {
+    display: none;
+    width: 100%;
+}
+
+.screen.active {
+    display: block;
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.title {
+    font-size: 3em;
+    color: white;
+    text-align: center;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+}
+
+.subtitle {
+    font-size: 1.2em;
+    color: rgba(255,255,255,0.9);
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.game-modes {
+    display: grid;
+    gap: 20px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.game-button {
+    background: white;
+    border: none;
+    border-radius: 20px;
+    padding: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-height: 150px;
+    font-size: 1em;
+}
+
+.game-button:active {
+    transform: scale(0.95);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.game-button .icon {
+    font-size: 4em;
+}
+
+.game-button .name {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #333;
+}
+
+.game-button .desc {
+    font-size: 1em;
+    color: #666;
+}
+
+.game-button.pirate {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+}
+
+.game-button.crocodile {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+}
+
+.game-button.cards {
+    background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+}
+
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(255,255,255,0.3);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 1.1em;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+}
+
+.back-button:active {
+    transform: scale(0.95);
+}
+
+.game-title {
+    font-size: 2.5em;
+    color: white;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+}
+
+.game-area {
+    background: rgba(255,255,255,0.95);
+    border-radius: 30px;
+    padding: 40px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+.barrel {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+    border-radius: 20px;
+    margin: 0 auto 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 5px solid #654321;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.pirate {
+    font-size: 5em;
+    transition: all 0.3s ease;
+}
+
+.pirate.pop {
+    animation: popOut 0.5s ease;
+}
+
+@keyframes popOut {
+    0% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.5) rotate(10deg); }
+    100% { transform: scale(1.3) rotate(0deg); }
+}
+
+.slots {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.slot {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 15px;
+    padding: 25px;
+    font-size: 2em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.slot:active {
+    transform: scale(0.9);
+}
+
+.slot.used {
+    background: #ccc;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.crocodile {
+    width: 250px;
+    height: 150px;
+    margin: 0 auto 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    border-radius: 50px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.croc-head {
+    font-size: 6em;
+    transition: all 0.3s ease;
+}
+
+.croc-head.bite {
+    animation: bite 0.5s ease;
+}
+
+@keyframes bite {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3) rotate(10deg); }
+    100% { transform: scale(1.2); }
+}
+
+.teeth-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.tooth {
+    background: white;
+    border: 3px solid #4CAF50;
+    border-radius: 15px;
+    padding: 25px;
+    font-size: 2em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.tooth:active {
+    transform: scale(0.9);
+}
+
+.tooth.pressed {
+    background: #e0e0e0;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.card-deck {
+    width: 200px;
+    height: 280px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    margin: 0 auto 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.card-deck:active {
+    transform: scale(0.95) rotate(2deg);
+}
+
+.card-back {
+    font-size: 5em;
+    margin-bottom: 10px;
+}
+
+.card-count {
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.drawn-card {
+    min-height: 300px;
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    animation: cardFlip 0.5s ease;
+}
+
+@keyframes cardFlip {
+    0% { transform: rotateY(90deg); opacity: 0; }
+    100% { transform: rotateY(0deg); opacity: 1; }
+}
+
+.card-content {
+    text-align: center;
+}
+
+.card-icon {
+    font-size: 4em;
+    margin-bottom: 20px;
+}
+
+.card-text {
+    font-size: 1.5em;
+    color: #333;
+    line-height: 1.6;
+}
+
+.card-type {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 1em;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.card-type.truth {
+    background: #2196F3;
+    color: white;
+}
+
+.card-type.dare {
+    background: #FF5722;
+    color: white;
+}
+
+.card-type.drink {
+    background: #4CAF50;
+    color: white;
+}
+
+.card-type.game {
+    background: #9C27B0;
+    color: white;
+}
+
+.message {
+    text-align: center;
+    font-size: 1.3em;
+    color: #666;
+    margin-bottom: 20px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.message.warning {
+    color: #FF5722;
+    font-weight: bold;
+    font-size: 1.5em;
+    animation: pulse 0.5s ease;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.reset-button {
+    width: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 20px;
+    border-radius: 15px;
+    font-size: 1.3em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.reset-button:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 2.5em;
+    }
+
+    .game-button {
+        padding: 25px;
+        min-height: 130px;
+    }
+
+    .game-button .icon {
+        font-size: 3em;
+    }
+
+    .game-button .name {
+        font-size: 1.5em;
+    }
+
+    .game-area {
+        padding: 30px 20px;
+    }
+
+    .slots {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+
+    .slot {
+        padding: 20px 10px;
+        font-size: 1.5em;
+    }
+
+    .teeth-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+
+    .tooth {
+        padding: 20px 10px;
+        font-size: 1.5em;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- หน้าเมนูหลัก -->
+    <div id="menu-screen" class="screen active">
+        <div class="container">
+            <h1 class="title">🎉 เกมปาร์ตี้วงเหล้า</h1>
+            <p class="subtitle">เลือกเกมที่อยากเล่น</p>
+
+            <div class="game-modes">
+                <button class="game-button pirate" onclick="startGame('pirate')">
+                    <span class="icon">🏴‍☠️</span>
+                    <span class="name">โจรสลัด</span>
+                    <span class="desc">เสียบดาบลุ้นโชค</span>
+                </button>
+
+                <button class="game-button crocodile" onclick="startGame('crocodile')">
+                    <span class="icon">🐊</span>
+                    <span class="name">จระเข้</span>
+                    <span class="desc">กดฟันลุ้นโชค</span>
+                </button>
+
+                <button class="game-button cards" onclick="startGame('cards')">
+                    <span class="icon">🎴</span>
+                    <span class="name">ไพ่ปาร์ตี้</span>
+                    <span class="desc">จั่วการ์ดสนุกๆ</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- เกมโจรสลัด -->
+    <div id="pirate-screen" class="screen">
+        <div class="container">
+            <button class="back-button" onclick="backToMenu()">← กลับ</button>
+            <h2 class="game-title">🏴‍☠️ เกมโจรสลัด</h2>
+
+            <div class="game-area">
+                <div class="barrel">
+                    <div class="pirate" id="pirate">😴</div>
+                </div>
+
+                <div class="slots">
+                    <button class="slot" onclick="insertSword(0)">🗡️</button>
+                    <button class="slot" onclick="insertSword(1)">🗡️</button>
+                    <button class="slot" onclick="insertSword(2)">🗡️</button>
+                    <button class="slot" onclick="insertSword(3)">🗡️</button>
+                    <button class="slot" onclick="insertSword(4)">🗡️</button>
+                    <button class="slot" onclick="insertSword(5)">🗡️</button>
+                    <button class="slot" onclick="insertSword(6)">🗡️</button>
+                    <button class="slot" onclick="insertSword(7)">🗡️</button>
+                </div>
+
+                <div class="message" id="pirate-message">เสียบดาบทีละอัน... ระวังโจรสลัดโผล่!</div>
+                <button class="reset-button" onclick="resetPirate()">🔄 เริ่มใหม่</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- เกมจระเข้ -->
+    <div id="crocodile-screen" class="screen">
+        <div class="container">
+            <button class="back-button" onclick="backToMenu()">← กลับ</button>
+            <h2 class="game-title">🐊 เกมจระเข้</h2>
+
+            <div class="game-area">
+                <div class="crocodile" id="crocodile">
+                    <div class="croc-head">🐊</div>
+                </div>
+
+                <div class="teeth-grid">
+                    <button class="tooth" onclick="pressTooth(0)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(1)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(2)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(3)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(4)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(5)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(6)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(7)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(8)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(9)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(10)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(11)">🦷</button>
+                </div>
+
+                <div class="message" id="croc-message">กดฟันทีละอัน... อย่าให้ปากกัด!</div>
+                <button class="reset-button" onclick="resetCrocodile()">🔄 เริ่มใหม่</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- เกมไพ่ปาร์ตี้ -->
+    <div id="cards-screen" class="screen">
+        <div class="container">
+            <button class="back-button" onclick="backToMenu()">← กลับ</button>
+            <h2 class="game-title">🎴 ไพ่ปาร์ตี้</h2>
+
+            <div class="game-area">
+                <div class="card-deck" id="card-deck" onclick="drawCard()">
+                    <div class="card-back">🎴</div>
+                    <div class="card-count">เหลือ: <span id="card-count">20</span> ใบ</div>
+                </div>
+
+                <div class="drawn-card" id="drawn-card">
+                    <div class="card-content">
+                        <div class="card-icon">👆</div>
+                        <div class="card-text">แตะกองไพ่เพื่อจั่ว!</div>
+                    </div>
+                </div>
+
+                <button class="reset-button" onclick="resetCards()">🔄 สับไพ่ใหม่</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+// ตัวแปรเกม
+let currentScreen = 'menu';
+let pirateSlot = -1;
+let usedSlots = [];
+let badTooth = -1;
+let usedTeeth = [];
+let cardDeck = [];
+let usedCards = 0;
+
+// ฟังก์ชันเปลี่ยนหน้าจอ
+function showScreen(screenName) {
+    document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+    });
+    document.getElementById(screenName + '-screen').classList.add('active');
+    currentScreen = screenName;
+}
+
+function startGame(gameType) {
+    showScreen(gameType);
+
+    if (gameType === 'pirate') {
+        resetPirate();
+    } else if (gameType === 'crocodile') {
+        resetCrocodile();
+    } else if (gameType === 'cards') {
+        resetCards();
+    }
+}
+
+function backToMenu() {
+    showScreen('menu');
+}
+
+// ========== เกมโจรสลัด ==========
+function resetPirate() {
+    pirateSlot = Math.floor(Math.random() * 8);
+    usedSlots = [];
+
+    document.getElementById('pirate').textContent = '😴';
+    document.getElementById('pirate').classList.remove('pop');
+    document.getElementById('pirate-message').textContent = 'เสียบดาบทีละอัน... ระวังโจรสลัดโผล่!';
+    document.getElementById('pirate-message').classList.remove('warning');
+
+    document.querySelectorAll('.slot').forEach((slot, index) => {
+        slot.classList.remove('used');
+        slot.disabled = false;
+    });
+}
+
+function insertSword(slotIndex) {
+    if (usedSlots.includes(slotIndex)) return;
+
+    usedSlots.push(slotIndex);
+    const slotButton = document.querySelectorAll('.slot')[slotIndex];
+    slotButton.classList.add('used');
+    slotButton.disabled = true;
+
+    if (slotIndex === pirateSlot) {
+        // โดนโจรสลัด!
+        document.getElementById('pirate').textContent = '😱';
+        document.getElementById('pirate').classList.add('pop');
+        document.getElementById('pirate-message').textContent = '💥 โจรสลัดโผล่! ดื่ม! 🍺';
+        document.getElementById('pirate-message').classList.add('warning');
+
+        // ปิดปุ่มทั้งหมด
+        document.querySelectorAll('.slot').forEach(slot => {
+            slot.disabled = true;
+        });
+    } else {
+        // ปลอดภัย
+        document.getElementById('pirate-message').textContent = `✅ ปลอดภัย! (${usedSlots.length}/8)`;
+
+        // ชนะถ้าเสียบครบ 7 อัน (เว้นอันที่เป็นโจร)
+        if (usedSlots.length === 7) {
+            document.getElementById('pirate').textContent = '😅';
+            document.getElementById('pirate-message').textContent = '🎉 ปลอดภัยทั้งหมด! ไม่ต้องดื่ม!';
+            document.getElementById('pirate-message').classList.add('warning');
+        }
+    }
+}
+
+// ========== เกมจระเข้ ==========
+function resetCrocodile() {
+    badTooth = Math.floor(Math.random() * 12);
+    usedTeeth = [];
+
+    document.querySelector('.croc-head').textContent = '🐊';
+    document.querySelector('.croc-head').classList.remove('bite');
+    document.getElementById('croc-message').textContent = 'กดฟันทีละอัน... อย่าให้ปากกัด!';
+    document.getElementById('croc-message').classList.remove('warning');
+
+    document.querySelectorAll('.tooth').forEach(tooth => {
+        tooth.classList.remove('pressed');
+        tooth.disabled = false;
+    });
+}
+
+function pressTooth(toothIndex) {
+    if (usedTeeth.includes(toothIndex)) return;
+
+    usedTeeth.push(toothIndex);
+    const toothButton = document.querySelectorAll('.tooth')[toothIndex];
+    toothButton.classList.add('pressed');
+    toothButton.disabled = true;
+
+    if (toothIndex === badTooth) {
+        // โดนกัด!
+        document.querySelector('.croc-head').textContent = '😠';
+        document.querySelector('.croc-head').classList.add('bite');
+        document.getElementById('croc-message').textContent = '💥 ปากกัด! ดื่ม! 🍺';
+        document.getElementById('croc-message').classList.add('warning');
+
+        // ปิดปุ่มทั้งหมด
+        document.querySelectorAll('.tooth').forEach(tooth => {
+            tooth.disabled = true;
+        });
+    } else {
+        // ปลอดภัย
+        document.getElementById('croc-message').textContent = `✅ ปลอดภัย! (${usedTeeth.length}/12)`;
+
+        // ชนะถ้ากดครบ 11 อัน
+        if (usedTeeth.length === 11) {
+            document.querySelector('.croc-head').textContent = '😴';
+            document.getElementById('croc-message').textContent = '🎉 ปลอดภัยทั้งหมด! ไม่ต้องดื่ม!';
+            document.getElementById('croc-message').classList.add('warning');
+        }
+    }
+}
+
+// ========== เกมไพ่ปาร์ตี้ ==========
+const partyCards = {
+    truth: [
+        'เล่าความลับที่ไม่เคยบอกใคร',
+        'บอกคนที่ชอบในวงนี้ (ถ้ามี)',
+        'เรื่องอายที่สุดในชีวิตคืออะไร?',
+        'เคยโกหกคนในวงนี้มั้ย? เรื่องอะไร?',
+        'สิ่งที่กลัวที่สุดในชีวิตคืออะไร?',
+        'เคยแอบชอบเพื่อนคนนี้มั้ย?',
+        'โกหกครั้งสุดท้ายคือเมื่อไหร่?',
+        'สิ่งที่เสียใจที่สุดในชีวิตคืออะไร?',
+        'เคยทำอะไรที่ผิดกฎหมายมั้ย?',
+        'เคยทำให้คนอื่นร้องไห้มั้ย?'
+    ],
+    dare: [
+        'โทรหาคนที่กำลังคิดถึงตอนนี้',
+        'ส่งข้อความหาแฟนเก่า',
+        'เต้นในที่สาธารณะ 30 วินาที',
+        'กินพริกดิบ 1 เม็ด',
+        'ทำท่าตลก 5 ท่า',
+        'ร้องเพลงดังๆ 1 เพลง',
+        'แปรงฟันด้วยน้ำปลา',
+        'ลบโพสต์ล่าสุดบน Instagram',
+        'ส่งข้อความหาคนสุ่มในเบอร์ว่า "คิดถึง"',
+        'ทำท่าโยคะ 3 ท่า'
+    ],
+    drink: [
+        'ดื่ม 1 shot',
+        'ดื่ม 2 shots',
+        'ดื่ม 3 shots',
+        'แจกให้คนอื่นดื่ม 2 shots',
+        'เลือกคน 2 คนดื่มด้วยกัน',
+        'ดื่มแก้วทั้งแก้ว',
+        'ดื่มพร้อมกับคนทางซ้าย',
+        'ดื่มพร้อมกับคนทางขวา',
+        'ทุกคนในวงดื่ม!',
+        'ดื่มแล้วจูบมือคนทางขวา'
+    ],
+    game: [
+        'นับเลข 1-20 สลับกันทีละคน พูดพร้อมกันต้องดื่ม',
+        'เล่นเกม ใครพูดช้าสุดดื่ม: ตั้งชื่อ 5 แบรนด์รถยนต์',
+        'เล่นเกม ใครพูดช้าสุดดื่ม: ตั้งชื่อ 5 ประเทศในเอเชีย',
+        'Rock Paper Scissors - คนแพ้ดื่ม',
+        'เดาคำ: คนอื่นให้คำใบ้ 3 ข้อ ถ้าเดาถูกให้คนอื่นดื่ม',
+        'เล่น Thumb Master: วางนิ้วหัวแม่มือบนโต๊ะ คนสุดท้ายดื่ม',
+        'เล่นคีม้าคีมงู ใครแพ้ดื่ม',
+        'ทุกคนเต้นตามเพลง คนเต้นแย่สุดดื่ม',
+        'แข่งถอดเสื้อผ้า (ถุงเท้า รองเท้า) คนช้าสุดดื่ม',
+        'เล่น 5 วินาทีชาเลนจ์ - ตั้งชื่อเพลงของ BTS 3 เพลง'
+    ]
+};
+
+function resetCards() {
+    cardDeck = [];
+    usedCards = 0;
+
+    // สร้างสำรับไพ่
+    Object.keys(partyCards).forEach(type => {
+        partyCards[type].forEach(text => {
+            cardDeck.push({ type, text });
+        });
+    });
+
+    // สับไพ่
+    cardDeck = shuffleArray(cardDeck);
+
+    document.getElementById('card-count').textContent = cardDeck.length;
+    document.getElementById('drawn-card').innerHTML = `
+        <div class="card-content">
+            <div class="card-icon">👆</div>
+            <div class="card-text">แตะกองไพ่เพื่อจั่ว!</div>
+        </div>
+    `;
+}
+
+function shuffleArray(array) {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+}
+
+function drawCard() {
+    if (usedCards >= cardDeck.length) {
+        alert('ไพ่หมดแล้ว! กดปุ่มสับไพ่ใหม่');
+        return;
+    }
+
+    const card = cardDeck[usedCards];
+    usedCards++;
+
+    document.getElementById('card-count').textContent = cardDeck.length - usedCards;
+
+    const icons = {
+        truth: '💭',
+        dare: '🔥',
+        drink: '🍺',
+        game: '🎮'
+    };
+
+    const names = {
+        truth: 'TRUTH',
+        dare: 'DARE',
+        drink: 'DRINK',
+        game: 'MINI GAME'
+    };
+
+    document.getElementById('drawn-card').innerHTML = `
+        <div class="card-content">
+            <div class="card-icon">${icons[card.type]}</div>
+            <div class="card-type ${card.type}">${names[card.type]}</div>
+            <div class="card-text">${card.text}</div>
+        </div>
+    `;
+}
+
+// เริ่มต้น
+window.addEventListener('load', () => {
+    showScreen('menu');
+});
+    </script>
+</body>
+</html>
