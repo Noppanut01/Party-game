@@ -3,147 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🎰 Casino Party Games</title>
+    <title>🎰 Online Party Poker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Menu Screen -->
-    <div id="menu-screen" class="screen active">
-        <div class="container">
-            <h1 class="title">🎰 CASINO PARTY GAMES</h1>
-            <p class="subtitle">เลือกเกมที่อยากเล่น</p>
+    <!-- Home Screen -->
+    <div id="home-screen" class="screen active">
+        <div class="poker-table-bg">
+            <div class="container">
+                <div class="logo">
+                    <h1 class="game-logo">🎰</h1>
+                    <h2 class="game-title">PARTY POKER</h2>
+                    <p class="game-subtitle">เกมไพ่ออนไลน์สำหรับปาร์ตี้</p>
+                </div>
 
-            <div class="game-grid">
-                <button class="game-card pirate" onclick="startGame('pirate')">
-                    <div class="game-icon">🏴‍☠️</div>
-                    <div class="game-name">PIRATE BARREL</div>
-                    <div class="game-desc">ลากดาบเสียบถัง</div>
-                </button>
+                <div class="menu-cards">
+                    <button class="menu-card create" onclick="showCreateRoom()">
+                        <div class="card-icon">➕</div>
+                        <div class="card-title">สร้างห้อง</div>
+                        <div class="card-desc">เริ่มเกมใหม่</div>
+                    </button>
 
-                <button class="game-card crocodile" onclick="startGame('crocodile')">
-                    <div class="game-icon">🐊</div>
-                    <div class="game-name">CROCODILE DENTIST</div>
-                    <div class="game-desc">กดฟันจระเข้</div>
-                </button>
-
-                <button class="game-card cards" onclick="startGame('cards')">
-                    <div class="game-icon">🃏</div>
-                    <div class="game-name">PARTY POKER</div>
-                    <div class="game-desc">ลากไพ่จั่ว</div>
-                </button>
+                    <button class="menu-card join" onclick="showJoinRoom()">
+                        <div class="card-icon">🚪</div>
+                        <div class="card-title">เข้าร่วมห้อง</div>
+                        <div class="card-desc">ใช้รหัสห้อง</div>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Pirate Game Screen -->
-    <div id="pirate-screen" class="screen">
-        <button class="back-btn" onclick="backToMenu()">← กลับ</button>
+    <!-- Create Room Screen -->
+    <div id="create-room-screen" class="screen">
+        <div class="poker-table-bg">
+            <button class="back-btn" onclick="showHome()">← กลับ</button>
 
-        <div class="game-container">
-            <h2 class="game-title">🏴‍☠️ PIRATE BARREL</h2>
-            <p class="game-instruction">ลากดาบไปวางบนถัง!</p>
+            <div class="container">
+                <h2 class="screen-title">สร้างห้องเกม</h2>
 
-            <!-- Barrel -->
-            <div class="barrel-container">
-                <div id="barrel" class="barrel">
-                    <div class="pirate-face" id="pirate-face">😴</div>
-                    <!-- Slots for swords -->
-                    <div class="barrel-slots">
-                        <div class="barrel-slot" data-slot="0"></div>
-                        <div class="barrel-slot" data-slot="1"></div>
-                        <div class="barrel-slot" data-slot="2"></div>
-                        <div class="barrel-slot" data-slot="3"></div>
-                        <div class="barrel-slot" data-slot="4"></div>
-                        <div class="barrel-slot" data-slot="5"></div>
-                        <div class="barrel-slot" data-slot="6"></div>
-                        <div class="barrel-slot" data-slot="7"></div>
+                <div class="form-card">
+                    <div class="form-group">
+                        <label>ชื่อของคุณ</label>
+                        <input type="text" id="create-name-input" placeholder="ใส่ชื่อ" maxlength="20">
+                    </div>
+
+                    <button class="primary-btn" onclick="createRoom()">
+                        <span>🎲</span> สร้างห้องและเริ่มเกม
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Join Room Screen -->
+    <div id="join-room-screen" class="screen">
+        <div class="poker-table-bg">
+            <button class="back-btn" onclick="showHome()">← กลับ</button>
+
+            <div class="container">
+                <h2 class="screen-title">เข้าร่วมห้อง</h2>
+
+                <div class="form-card">
+                    <div class="form-group">
+                        <label>ชื่อของคุณ</label>
+                        <input type="text" id="join-name-input" placeholder="ใส่ชื่อ" maxlength="20">
+                    </div>
+
+                    <div class="form-group">
+                        <label>รหัสห้อง</label>
+                        <input type="text" id="room-code-input" placeholder="ใส่รหัส 6 หลัก" maxlength="6" style="text-transform: uppercase;">
+                    </div>
+
+                    <button class="primary-btn" onclick="joinRoom()">
+                        <span>🚪</span> เข้าร่วมห้อง
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Room Screen -->
+    <div id="game-screen" class="screen">
+        <div class="poker-table-bg">
+            <!-- Header -->
+            <div class="game-header">
+                <button class="leave-btn" onclick="leaveRoom()">🚪 ออก</button>
+                <div class="room-info">
+                    <div class="room-code-display">
+                        รหัสห้อง: <span id="display-room-code">------</span>
+                        <button class="copy-btn" onclick="copyRoomCode()">📋</button>
                     </div>
                 </div>
+                <div class="player-count" id="player-count">👥 0</div>
             </div>
 
-            <!-- Swords -->
-            <div class="swords-container" id="swords-container">
-                <div class="sword draggable" draggable="true" data-sword="0">🗡️</div>
-                <div class="sword draggable" draggable="true" data-sword="1">🗡️</div>
-                <div class="sword draggable" draggable="true" data-sword="2">🗡️</div>
-                <div class="sword draggable" draggable="true" data-sword="3">🗡️</div>
-                <div class="sword draggable" draggable="true" data-sword="4">🗡️</div>
-                <div class="sword draggable" draggable="true" data-sword="5">🗡️</div>
-                <div class="sword draggable" draggable="true" data-sword="6">🗡️</div>
-                <div class="sword draggable" draggable="true" data-sword="7">🗡️</div>
-            </div>
-
-            <div class="game-message" id="pirate-message">ลากดาบไปวางบนถัง!</div>
-            <button class="reset-btn" onclick="resetPirate()">🔄 เริ่มใหม่</button>
-        </div>
-    </div>
-
-    <!-- Crocodile Game Screen -->
-    <div id="crocodile-screen" class="screen">
-        <button class="back-btn" onclick="backToMenu()">← กลับ</button>
-
-        <div class="game-container">
-            <h2 class="game-title">🐊 CROCODILE DENTIST</h2>
-            <p class="game-instruction">กดฟันทีละอัน อย่าให้ปากกัด!</p>
-
-            <div class="croc-container">
-                <div class="croc-head" id="croc-head">
-                    <div class="croc-emoji">🐊</div>
-                </div>
-
-                <div class="teeth-grid">
-                    <button class="tooth" onclick="pressTooth(0)">🦷</button>
-                    <button class="tooth" onclick="pressTooth(1)">🦷</button>
-                    <button class="tooth" onclick="pressTooth(2)">🦷</button>
-                    <button class="tooth" onclick="pressTooth(3)">🦷</button>
-                    <button class="tooth" onclick="pressTooth(4)">🦷</button>
-                    <button class="tooth" onclick="pressTooth(5)">🦷</button>
-                    <button class="tooth" onclick="pressTooth(6)">🦷</button>
-                    <button class="tooth" onclick="pressTooth(7)">🦷</button>
-                    <button class="tooth" onclick="pressTooth(8)">🦷</button>
-                    <button class="tooth" onclick="pressTooth(9)">🦷</button>
-                    <button class="tooth" onclick="pressTooth(10)">🦷</button>
-                    <button class="tooth" onclick="pressTooth(11)">🦷</button>
-                </div>
-            </div>
-
-            <div class="game-message" id="croc-message">กดฟันทีละอัน!</div>
-            <button class="reset-btn" onclick="resetCrocodile()">🔄 เริ่มใหม่</button>
-        </div>
-    </div>
-
-    <!-- Card Game Screen -->
-    <div id="cards-screen" class="screen">
-        <button class="back-btn" onclick="backToMenu()">← กลับ</button>
-
-        <div class="game-container">
-            <h2 class="game-title">🃏 PARTY POKER</h2>
-            <p class="game-instruction">ลากไพ่จากกอง!</p>
-
-            <div class="card-game-area">
-                <!-- Card Deck -->
-                <div class="card-deck-container">
-                    <div id="card-deck" class="card-deck">
-                        <div class="card card-back" draggable="true" id="top-card">
-                            <div class="card-back-design">🃏</div>
+            <!-- Main Game Area -->
+            <div class="game-container">
+                <!-- Center Deck -->
+                <div class="center-area">
+                    <div class="deck-area">
+                        <div class="card-deck" id="card-deck" onclick="drawCard()">
+                            <div class="card-stack">
+                                <div class="card card-back"></div>
+                                <div class="card card-back" style="transform: translateY(-5px) rotate(2deg);"></div>
+                                <div class="card card-back" style="transform: translateY(-10px) rotate(-1deg);"></div>
+                            </div>
+                            <div class="deck-label">แตะเพื่อจั่วไพ่</div>
                         </div>
-                        <div class="deck-count">เหลือ: <span id="deck-count">52</span> ใบ</div>
+
+                        <div class="cards-left" id="cards-left">52 ใบ</div>
+                    </div>
+
+                    <!-- Current Card Display -->
+                    <div id="current-card-display" class="current-card-display" style="display: none;">
+                        <!-- Card will be inserted here -->
                     </div>
                 </div>
 
-                <!-- Drop Zone -->
-                <div id="card-drop-zone" class="card-drop-zone">
-                    <div class="drop-zone-text">ลากไพ่มาวางที่นี่</div>
+                <!-- Players List -->
+                <div class="players-area">
+                    <h3 class="players-title">ผู้เล่น</h3>
+                    <div id="players-list" class="players-list">
+                        <!-- Players will be added here -->
+                    </div>
+                </div>
+
+                <!-- Game Log -->
+                <div class="game-log-area">
+                    <h3 class="log-title">ประวัติเกม</h3>
+                    <div id="game-log" class="game-log">
+                        <div class="log-item system">เริ่มเกมใหม่! 🎉</div>
+                    </div>
                 </div>
             </div>
-
-            <div class="game-message" id="card-message"></div>
-            <button class="reset-btn" onclick="resetCards()">🔄 สับไพ่ใหม่</button>
         </div>
     </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
     <script src="app.js"></script>
 </body>
