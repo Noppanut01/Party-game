@@ -1,0 +1,437 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+    touch-action: manipulation;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* หน้าจอต่างๆ */
+.screen {
+    display: none;
+    width: 100%;
+}
+
+.screen.active {
+    display: block;
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* หน้าเมนูหลัก */
+.title {
+    font-size: 3em;
+    color: white;
+    text-align: center;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+}
+
+.subtitle {
+    font-size: 1.2em;
+    color: rgba(255,255,255,0.9);
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.game-modes {
+    display: grid;
+    gap: 20px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.game-button {
+    background: white;
+    border: none;
+    border-radius: 20px;
+    padding: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-height: 150px;
+    font-size: 1em;
+}
+
+.game-button:active {
+    transform: scale(0.95);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.game-button .icon {
+    font-size: 4em;
+}
+
+.game-button .name {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #333;
+}
+
+.game-button .desc {
+    font-size: 1em;
+    color: #666;
+}
+
+.game-button.pirate {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+}
+
+.game-button.crocodile {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+}
+
+.game-button.cards {
+    background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+}
+
+/* ปุ่มกลับ */
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(255,255,255,0.3);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 1.1em;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+}
+
+.back-button:active {
+    transform: scale(0.95);
+}
+
+.game-title {
+    font-size: 2.5em;
+    color: white;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+}
+
+.game-area {
+    background: rgba(255,255,255,0.95);
+    border-radius: 30px;
+    padding: 40px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+/* เกมโจรสลัด */
+.barrel {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+    border-radius: 20px;
+    margin: 0 auto 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 5px solid #654321;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.pirate {
+    font-size: 5em;
+    transition: all 0.3s ease;
+}
+
+.pirate.pop {
+    animation: popOut 0.5s ease;
+}
+
+@keyframes popOut {
+    0% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.5) rotate(10deg); }
+    100% { transform: scale(1.3) rotate(0deg); }
+}
+
+.slots {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.slot {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 15px;
+    padding: 25px;
+    font-size: 2em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.slot:active {
+    transform: scale(0.9);
+}
+
+.slot.used {
+    background: #ccc;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* เกมจระเข้ */
+.crocodile {
+    width: 250px;
+    height: 150px;
+    margin: 0 auto 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    border-radius: 50px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.croc-head {
+    font-size: 6em;
+    transition: all 0.3s ease;
+}
+
+.croc-head.bite {
+    animation: bite 0.5s ease;
+}
+
+@keyframes bite {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3) rotate(10deg); }
+    100% { transform: scale(1.2); }
+}
+
+.teeth-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.tooth {
+    background: white;
+    border: 3px solid #4CAF50;
+    border-radius: 15px;
+    padding: 25px;
+    font-size: 2em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.tooth:active {
+    transform: scale(0.9);
+}
+
+.tooth.pressed {
+    background: #e0e0e0;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* เกมไพ่ */
+.card-deck {
+    width: 200px;
+    height: 280px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    margin: 0 auto 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.card-deck:active {
+    transform: scale(0.95) rotate(2deg);
+}
+
+.card-back {
+    font-size: 5em;
+    margin-bottom: 10px;
+}
+
+.card-count {
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.drawn-card {
+    min-height: 300px;
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    animation: cardFlip 0.5s ease;
+}
+
+@keyframes cardFlip {
+    0% { transform: rotateY(90deg); opacity: 0; }
+    100% { transform: rotateY(0deg); opacity: 1; }
+}
+
+.card-content {
+    text-align: center;
+}
+
+.card-icon {
+    font-size: 4em;
+    margin-bottom: 20px;
+}
+
+.card-text {
+    font-size: 1.5em;
+    color: #333;
+    line-height: 1.6;
+}
+
+.card-type {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 1em;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.card-type.truth {
+    background: #2196F3;
+    color: white;
+}
+
+.card-type.dare {
+    background: #FF5722;
+    color: white;
+}
+
+.card-type.drink {
+    background: #4CAF50;
+    color: white;
+}
+
+.card-type.game {
+    background: #9C27B0;
+    color: white;
+}
+
+/* ข้อความและปุ่ม */
+.message {
+    text-align: center;
+    font-size: 1.3em;
+    color: #666;
+    margin-bottom: 20px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.message.warning {
+    color: #FF5722;
+    font-weight: bold;
+    font-size: 1.5em;
+    animation: pulse 0.5s ease;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.reset-button {
+    width: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 20px;
+    border-radius: 15px;
+    font-size: 1.3em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.reset-button:active {
+    transform: scale(0.95);
+}
+
+/* Responsive สำหรับ iPad */
+@media (max-width: 768px) {
+    .title {
+        font-size: 2.5em;
+    }
+
+    .game-button {
+        padding: 25px;
+        min-height: 130px;
+    }
+
+    .game-button .icon {
+        font-size: 3em;
+    }
+
+    .game-button .name {
+        font-size: 1.5em;
+    }
+
+    .game-area {
+        padding: 30px 20px;
+    }
+
+    .slots {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+
+    .slot {
+        padding: 20px 10px;
+        font-size: 1.5em;
+    }
+
+    .teeth-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+
+    .tooth {
+        padding: 20px 10px;
+        font-size: 1.5em;
+    }
+}

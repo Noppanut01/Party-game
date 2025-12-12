@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎉 เกมปาร์ตี้วงเหล้า</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- หน้าเมนูหลัก -->
+    <div id="menu-screen" class="screen active">
+        <div class="container">
+            <h1 class="title">🎉 เกมปาร์ตี้วงเหล้า</h1>
+            <p class="subtitle">เลือกเกมที่อยากเล่น</p>
+
+            <div class="game-modes">
+                <button class="game-button pirate" onclick="startGame('pirate')">
+                    <span class="icon">🏴‍☠️</span>
+                    <span class="name">โจรสลัด</span>
+                    <span class="desc">เสียบดาบลุ้นโชค</span>
+                </button>
+
+                <button class="game-button crocodile" onclick="startGame('crocodile')">
+                    <span class="icon">🐊</span>
+                    <span class="name">จระเข้</span>
+                    <span class="desc">กดฟันลุ้นโชค</span>
+                </button>
+
+                <button class="game-button cards" onclick="startGame('cards')">
+                    <span class="icon">🎴</span>
+                    <span class="name">ไพ่ปาร์ตี้</span>
+                    <span class="desc">จั่วการ์ดสนุกๆ</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- เกมโจรสลัด -->
+    <div id="pirate-screen" class="screen">
+        <div class="container">
+            <button class="back-button" onclick="backToMenu()">← กลับ</button>
+            <h2 class="game-title">🏴‍☠️ เกมโจรสลัด</h2>
+
+            <div class="game-area">
+                <div class="barrel">
+                    <div class="pirate" id="pirate">😴</div>
+                </div>
+
+                <div class="slots">
+                    <button class="slot" onclick="insertSword(0)">🗡️</button>
+                    <button class="slot" onclick="insertSword(1)">🗡️</button>
+                    <button class="slot" onclick="insertSword(2)">🗡️</button>
+                    <button class="slot" onclick="insertSword(3)">🗡️</button>
+                    <button class="slot" onclick="insertSword(4)">🗡️</button>
+                    <button class="slot" onclick="insertSword(5)">🗡️</button>
+                    <button class="slot" onclick="insertSword(6)">🗡️</button>
+                    <button class="slot" onclick="insertSword(7)">🗡️</button>
+                </div>
+
+                <div class="message" id="pirate-message">เสียบดาบทีละอัน... ระวังโจรสลัดโผล่!</div>
+                <button class="reset-button" onclick="resetPirate()">🔄 เริ่มใหม่</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- เกมจระเข้ -->
+    <div id="crocodile-screen" class="screen">
+        <div class="container">
+            <button class="back-button" onclick="backToMenu()">← กลับ</button>
+            <h2 class="game-title">🐊 เกมจระเข้</h2>
+
+            <div class="game-area">
+                <div class="crocodile" id="crocodile">
+                    <div class="croc-head">🐊</div>
+                </div>
+
+                <div class="teeth-grid">
+                    <button class="tooth" onclick="pressTooth(0)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(1)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(2)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(3)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(4)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(5)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(6)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(7)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(8)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(9)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(10)">🦷</button>
+                    <button class="tooth" onclick="pressTooth(11)">🦷</button>
+                </div>
+
+                <div class="message" id="croc-message">กดฟันทีละอัน... อย่าให้ปากกัด!</div>
+                <button class="reset-button" onclick="resetCrocodile()">🔄 เริ่มใหม่</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- เกมไพ่ปาร์ตี้ -->
+    <div id="cards-screen" class="screen">
+        <div class="container">
+            <button class="back-button" onclick="backToMenu()">← กลับ</button>
+            <h2 class="game-title">🎴 ไพ่ปาร์ตี้</h2>
+
+            <div class="game-area">
+                <div class="card-deck" id="card-deck" onclick="drawCard()">
+                    <div class="card-back">🎴</div>
+                    <div class="card-count">เหลือ: <span id="card-count">20</span> ใบ</div>
+                </div>
+
+                <div class="drawn-card" id="drawn-card">
+                    <div class="card-content">
+                        <div class="card-icon">👆</div>
+                        <div class="card-text">แตะกองไพ่เพื่อจั่ว!</div>
+                    </div>
+                </div>
+
+                <button class="reset-button" onclick="resetCards()">🔄 สับไพ่ใหม่</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
