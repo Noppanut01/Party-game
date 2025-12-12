@@ -1,4 +1,4 @@
-// ตัวแปรเกม
+// ========== GAME STATE ==========
 let currentScreen = 'menu';
 let pirateSlot = -1;
 let usedSlots = [];
@@ -7,7 +7,33 @@ let usedTeeth = [];
 let cardDeck = [];
 let usedCards = 0;
 
-// ฟังก์ชันเปลี่ยนหน้าจอ
+// ========== PLAYING CARDS ==========
+const suits = {
+    hearts: { symbol: '♥', color: 'red-suit', name: 'Hearts' },
+    diamonds: { symbol: '♦', color: 'red-suit', name: 'Diamonds' },
+    clubs: { symbol: '♣', color: 'black-suit', name: 'Clubs' },
+    spades: { symbol: '♠', color: 'black-suit', name: 'Spades' }
+};
+
+const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+
+const cardActions = {
+    'A': ['ดื่ม 1 shot', 'แจกให้คนอื่น 2 shots', 'เล่นเกมนับเลข 1-21'],
+    '2': ['ดื่ม 2 shots', 'ให้คนทางซ้ายดื่ม 2 shots', 'คนที่อายุน้อยสุดดื่ม'],
+    '3': ['ดื่ม 3 shots', 'แจกให้ 3 คนดื่มคนละ 1 shot', 'ทุกคนดื่ม 1 shot'],
+    '4': ['ตอบคำถาม Truth', 'ทำท่า 4 ท่า', 'เล่น Rock Paper Scissors'],
+    '5': ['ให้คนทางขวาดื่ม 2 shots', 'Dare: โทรหาคนที่กำลังคิดถึง', 'ร้องเพลง 1 เพลง'],
+    '6': ['ผู้ชายทุกคนดื่ม', 'กำหนดกฎใหม่ 1 ข้อ', 'Thumb Master - ได้สิทธิ์วางนิ้วบนโต๊ะ'],
+    '7': ['คนที่สูงที่สุดดื่ม', 'ชี้ท้องฟ้า คนสุดท้ายดื่ม', 'เลือก 2 คนจูบแก้ม'],
+    '8': ['เลือก Drinking Buddy', 'Dare: ส่งข้อความหาแฟนเก่า', 'เต้นให้ทุกคนดู 30 วินาที'],
+    '9': ['ผู้หญิงทุกคนดื่ม', 'Rhyme Time - พูดคำสัมผัส', 'Categories - บอกชื่อสัตว์'],
+    '10': ['Master - คุณเป็นนาย', 'ตอบคำถาม "Never Have I Ever"', 'ทำท่าโยคะ 3 ท่า'],
+    'J': ['Jack - Question Master', 'เลือก 3 คนดื่ม', 'กำหนดท่าเต้น ทุกคนต้องทำตาม'],
+    'Q': ['Queen - ทำให้ทุกคนหัวเราะได้', 'Dare: ลบโพสต์ล่าสุด Instagram', 'เล่นเกม "กษัตริย์บอก"'],
+    'K': ['King\'s Cup - เทเหล้าลงแก้วกลาง', 'Make a Rule!', 'คนที่จั่ว K ใบสุดท้ายดื่มแก้วกลาง!']
+};
+
+// ========== NAVIGATION ==========
 function showScreen(screenName) {
     document.querySelectorAll('.screen').forEach(screen => {
         screen.classList.remove('active');
@@ -32,17 +58,17 @@ function backToMenu() {
     showScreen('menu');
 }
 
-// ========== เกมโจรสลัด ==========
+// ========== PIRATE GAME ==========
 function resetPirate() {
     pirateSlot = Math.floor(Math.random() * 8);
     usedSlots = [];
 
     document.getElementById('pirate').textContent = '😴';
-    document.getElementById('pirate').classList.remove('pop');
-    document.getElementById('pirate-message').textContent = 'เสียบดาบทีละอัน... ระวังโจรสลัดโผล่!';
-    document.getElementById('pirate-message').classList.remove('warning');
+    document.getElementById('pirate').classList.remove('scale-150', 'rotate-12');
+    document.getElementById('pirate-message').innerHTML = '<i class="fas fa-skull-crossbones mr-2"></i>เสียบดาบทีละอัน... ระวังโจรสลัดโผล่!';
+    document.getElementById('pirate-message').className = 'text-center text-2xl text-white mb-6 min-h-16 flex items-center justify-center';
 
-    document.querySelectorAll('.slot').forEach((slot, index) => {
+    document.querySelectorAll('.slot-hole').forEach((slot) => {
         slot.classList.remove('used');
         slot.disabled = false;
     });
@@ -52,45 +78,63 @@ function insertSword(slotIndex) {
     if (usedSlots.includes(slotIndex)) return;
 
     usedSlots.push(slotIndex);
-    const slotButton = document.querySelectorAll('.slot')[slotIndex];
+    const slotButton = document.querySelectorAll('.slot-hole')[slotIndex];
     slotButton.classList.add('used');
     slotButton.disabled = true;
 
-    if (slotIndex === pirateSlot) {
-        // โดนโจรสลัด!
-        document.getElementById('pirate').textContent = '😱';
-        document.getElementById('pirate').classList.add('pop');
-        document.getElementById('pirate-message').textContent = '💥 โจรสลัดโผล่! ดื่ม! 🍺';
-        document.getElementById('pirate-message').classList.add('warning');
+    // Sound effect simulation
+    const pirate = document.getElementById('pirate');
 
-        // ปิดปุ่มทั้งหมด
-        document.querySelectorAll('.slot').forEach(slot => {
+    if (slotIndex === pirateSlot) {
+        // Hit the pirate!
+        pirate.textContent = '😱';
+        pirate.classList.add('scale-150', 'rotate-12');
+        document.getElementById('pirate-message').innerHTML = `
+            <div class="text-red-500 font-bold text-3xl animate-pulse">
+                💥 โจรสลัดโผล่! ดื่ม! 🍺
+            </div>
+        `;
+        document.getElementById('pirate-message').className = 'text-center text-2xl mb-6 min-h-16 flex items-center justify-center glow';
+
+        // Disable all slots
+        document.querySelectorAll('.slot-hole').forEach(slot => {
             slot.disabled = true;
         });
-    } else {
-        // ปลอดภัย
-        document.getElementById('pirate-message').textContent = `✅ ปลอดภัย! (${usedSlots.length}/8)`;
 
-        // ชนะถ้าเสียบครบ 7 อัน (เว้นอันที่เป็นโจร)
+        // Confetti effect
+        createConfetti('💀', '🏴‍☠️', '💥');
+    } else {
+        // Safe!
+        document.getElementById('pirate-message').innerHTML = `
+            <div class="text-green-400 font-bold">
+                ✅ ปลอดภัย! (${usedSlots.length}/8)
+            </div>
+        `;
+
+        // Win if all safe slots are used
         if (usedSlots.length === 7) {
-            document.getElementById('pirate').textContent = '😅';
-            document.getElementById('pirate-message').textContent = '🎉 ปลอดภัยทั้งหมด! ไม่ต้องดื่ม!';
-            document.getElementById('pirate-message').classList.add('warning');
+            pirate.textContent = '😅';
+            document.getElementById('pirate-message').innerHTML = `
+                <div class="text-yellow-400 font-bold text-3xl">
+                    🎉 ปลอดภัยทั้งหมด! ไม่ต้องดื่ม!
+                </div>
+            `;
+            createConfetti('🎊', '🎉', '✨');
         }
     }
 }
 
-// ========== เกมจระเข้ ==========
+// ========== CROCODILE GAME ==========
 function resetCrocodile() {
     badTooth = Math.floor(Math.random() * 12);
     usedTeeth = [];
 
-    document.querySelector('.croc-head').textContent = '🐊';
-    document.querySelector('.croc-head').classList.remove('bite');
-    document.getElementById('croc-message').textContent = 'กดฟันทีละอัน... อย่าให้ปากกัด!';
-    document.getElementById('croc-message').classList.remove('warning');
+    document.getElementById('crocodile').textContent = '🐊';
+    document.getElementById('crocodile').classList.remove('bite');
+    document.getElementById('croc-message').innerHTML = '<i class="fas fa-tooth mr-2"></i>กดฟันทีละอัน... อย่าให้ปากกัด!';
+    document.getElementById('croc-message').className = 'text-center text-2xl text-white mb-6 min-h-16 flex items-center justify-center';
 
-    document.querySelectorAll('.tooth').forEach(tooth => {
+    document.querySelectorAll('.tooth-btn').forEach(tooth => {
         tooth.classList.remove('pressed');
         tooth.disabled = false;
     });
@@ -100,107 +144,64 @@ function pressTooth(toothIndex) {
     if (usedTeeth.includes(toothIndex)) return;
 
     usedTeeth.push(toothIndex);
-    const toothButton = document.querySelectorAll('.tooth')[toothIndex];
+    const toothButton = document.querySelectorAll('.tooth-btn')[toothIndex];
     toothButton.classList.add('pressed');
     toothButton.disabled = true;
 
-    if (toothIndex === badTooth) {
-        // โดนกัด!
-        document.querySelector('.croc-head').textContent = '😠';
-        document.querySelector('.croc-head').classList.add('bite');
-        document.getElementById('croc-message').textContent = '💥 ปากกัด! ดื่ม! 🍺';
-        document.getElementById('croc-message').classList.add('warning');
+    const croc = document.getElementById('crocodile');
 
-        // ปิดปุ่มทั้งหมด
-        document.querySelectorAll('.tooth').forEach(tooth => {
+    if (toothIndex === badTooth) {
+        // Bite!
+        croc.textContent = '😠';
+        croc.classList.add('bite');
+        document.getElementById('croc-message').innerHTML = `
+            <div class="text-red-500 font-bold text-3xl animate-pulse">
+                💥 ปากกัด! ดื่ม! 🍺
+            </div>
+        `;
+        document.getElementById('croc-message').className = 'text-center text-2xl mb-6 min-h-16 flex items-center justify-center glow';
+
+        // Disable all teeth
+        document.querySelectorAll('.tooth-btn').forEach(tooth => {
             tooth.disabled = true;
         });
-    } else {
-        // ปลอดภัย
-        document.getElementById('croc-message').textContent = `✅ ปลอดภัย! (${usedTeeth.length}/12)`;
 
-        // ชนะถ้ากดครบ 11 อัน
+        createConfetti('🐊', '💥', '😱');
+    } else {
+        // Safe!
+        document.getElementById('croc-message').innerHTML = `
+            <div class="text-green-400 font-bold">
+                ✅ ปลอดภัย! (${usedTeeth.length}/12)
+            </div>
+        `;
+
+        // Win if all safe teeth are pressed
         if (usedTeeth.length === 11) {
-            document.querySelector('.croc-head').textContent = '😴';
-            document.getElementById('croc-message').textContent = '🎉 ปลอดภัยทั้งหมด! ไม่ต้องดื่ม!';
-            document.getElementById('croc-message').classList.add('warning');
+            croc.textContent = '😴';
+            document.getElementById('croc-message').innerHTML = `
+                <div class="text-yellow-400 font-bold text-3xl">
+                    🎉 ปลอดภัยทั้งหมด! ไม่ต้องดื่ม!
+                </div>
+            `;
+            createConfetti('🎊', '🎉', '✨');
         }
     }
 }
 
-// ========== เกมไพ่ปาร์ตี้ ==========
-const partyCards = {
-    truth: [
-        'เล่าความลับที่ไม่เคยบอกใคร',
-        'บอกคนที่ชอบในวงนี้ (ถ้ามี)',
-        'เรื่องอายที่สุดในชีวิตคืออะไร?',
-        'เคยโกหกคนในวงนี้มั้ย? เรื่องอะไร?',
-        'สิ่งที่กลัวที่สุดในชีวิตคืออะไร?',
-        'เคยแอบชอบเพื่อนคนนี้มั้ย?',
-        'โกหกครั้งสุดท้ายคือเมื่อไหร่?',
-        'สิ่งที่เสียใจที่สุดในชีวิตคืออะไร?',
-        'เคยทำอะไรที่ผิดกฎหมายมั้ย?',
-        'เคยทำให้คนอื่นร้องไห้มั้ย?'
-    ],
-    dare: [
-        'โทรหาคนที่กำลังคิดถึงตอนนี้',
-        'ส่งข้อความหาแฟนเก่า',
-        'เต้นในที่สาธารณะ 30 วินาที',
-        'กินพริกดิบ 1 เม็ด',
-        'ทำท่าตลก 5 ท่า',
-        'ร้องเพลงดังๆ 1 เพลง',
-        'แปรงฟันด้วยน้ำปลา',
-        'ลบโพสต์ล่าสุดบน Instagram',
-        'ส่งข้อความหาคนสุ่มในเบอร์ว่า "คิดถึง"',
-        'ทำท่าโยคะ 3 ท่า'
-    ],
-    drink: [
-        'ดื่ม 1 shot',
-        'ดื่ม 2 shots',
-        'ดื่ม 3 shots',
-        'แจกให้คนอื่นดื่ม 2 shots',
-        'เลือกคน 2 คนดื่มด้วยกัน',
-        'ดื่มแก้วทั้งแก้ว',
-        'ดื่มพร้อมกับคนทางซ้าย',
-        'ดื่มพร้อมกับคนทางขวา',
-        'ทุกคนในวงดื่ม!',
-        'ดื่มแล้วจูบมือคนทางขวา'
-    ],
-    game: [
-        'นับเลข 1-20 สลับกันทีละคน พูดพร้อมกันต้องดื่ม',
-        'เล่นเกม ใครพูดช้าสุดดื่ม: ตั้งชื่อ 5 แบรนด์รถยนต์',
-        'เล่นเกม ใครพูดช้าสุดดื่ม: ตั้งชื่อ 5 ประเทศในเอเชีย',
-        'Rock Paper Scissors - คนแพ้ดื่ม',
-        'เดาคำ: คนอื่นให้คำใบ้ 3 ข้อ ถ้าเดาถูกให้คนอื่นดื่ม',
-        'เล่น Thumb Master: วางนิ้วหัวแม่มือบนโต๊ะ คนสุดท้ายดื่ม',
-        'เล่นคีม้าคีมงู ใครแพ้ดื่ม',
-        'ทุกคนเต้นตามเพลง คนเต้นแย่สุดดื่ม',
-        'แข่งถอดเสื้อผ้า (ถุงเท้า รองเท้า) คนช้าสุดดื่ม',
-        'เล่น 5 วินาทีชาเลนจ์ - ตั้งชื่อเพลงของ BTS 3 เพลง'
-    ]
-};
-
-function resetCards() {
-    cardDeck = [];
-    usedCards = 0;
-
-    // สร้างสำรับไพ่
-    Object.keys(partyCards).forEach(type => {
-        partyCards[type].forEach(text => {
-            cardDeck.push({ type, text });
-        });
-    });
-
-    // สับไพ่
-    cardDeck = shuffleArray(cardDeck);
-
-    document.getElementById('card-count').textContent = cardDeck.length;
-    document.getElementById('drawn-card').innerHTML = `
-        <div class="card-content">
-            <div class="card-icon">👆</div>
-            <div class="card-text">แตะกองไพ่เพื่อจั่ว!</div>
-        </div>
-    `;
+// ========== CARD GAME ==========
+function createDeck() {
+    const deck = [];
+    for (const [suitKey, suit] of Object.entries(suits)) {
+        for (const value of values) {
+            deck.push({
+                suit: suitKey,
+                value: value,
+                symbol: suit.symbol,
+                color: suit.color
+            });
+        }
+    }
+    return deck;
 }
 
 function shuffleArray(array) {
@@ -210,6 +211,19 @@ function shuffleArray(array) {
         [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
     }
     return newArray;
+}
+
+function resetCards() {
+    cardDeck = shuffleArray(createDeck());
+    usedCards = 0;
+
+    document.getElementById('card-count').textContent = cardDeck.length;
+    document.getElementById('drawn-card-container').innerHTML = `
+        <div class="text-white/60 text-2xl text-center">
+            <i class="fas fa-hand-pointer text-4xl mb-4"></i>
+            <p>👆 แตะกองไพ่เพื่อจั่วการ์ด</p>
+        </div>
+    `;
 }
 
 function drawCard() {
@@ -223,30 +237,111 @@ function drawCard() {
 
     document.getElementById('card-count').textContent = cardDeck.length - usedCards;
 
-    const icons = {
-        truth: '💭',
-        dare: '🔥',
-        drink: '🍺',
-        game: '🎮'
-    };
+    // Get random action for this card
+    const actions = cardActions[card.value];
+    const action = actions[Math.floor(Math.random() * actions.length)];
 
-    const names = {
-        truth: 'TRUTH',
-        dare: 'DARE',
-        drink: 'DRINK',
-        game: 'MINI GAME'
-    };
+    // Animate card flip
+    const container = document.getElementById('drawn-card-container');
+    container.innerHTML = `
+        <div class="card-flip flipped">
+            <div class="card-flip-inner">
+                <!-- Card Front (back design) -->
+                <div class="card-front">
+                    <div class="playing-card bg-gradient-to-br from-red-900 to-red-700">
+                        <div class="text-white text-6xl">🃏</div>
+                    </div>
+                </div>
 
-    document.getElementById('drawn-card').innerHTML = `
-        <div class="card-content">
-            <div class="card-icon">${icons[card.type]}</div>
-            <div class="card-type ${card.type}">${names[card.type]}</div>
-            <div class="card-text">${card.text}</div>
+                <!-- Card Back (actual card) -->
+                <div class="card-back">
+                    <div class="playing-card transform hover:scale-105 transition-transform">
+                        <!-- Top left corner -->
+                        <div class="${card.color}">
+                            <div class="card-value">${card.value}</div>
+                            <div class="text-4xl">${card.symbol}</div>
+                        </div>
+
+                        <!-- Center suit symbol -->
+                        <div class="card-suit ${card.color}">
+                            ${card.symbol}
+                        </div>
+
+                        <!-- Bottom right corner (rotated) -->
+                        <div class="${card.color} transform rotate-180">
+                            <div class="card-value">${card.value}</div>
+                            <div class="text-4xl">${card.symbol}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Display -->
+        <div class="mt-8 bg-white/10 backdrop-blur-md rounded-2xl p-6 max-w-md mx-auto">
+            <div class="text-yellow-400 font-bold text-2xl mb-4">
+                ${getCardName(card.value)}
+            </div>
+            <div class="text-white text-xl mb-4">
+                ${action}
+            </div>
+            <div class="text-white/60 text-sm">
+                <i class="fas fa-info-circle mr-2"></i>
+                ${card.value} of ${suits[card.suit].name}
+            </div>
         </div>
     `;
+
+    // Play flip animation
+    setTimeout(() => {
+        const flipCard = container.querySelector('.card-flip');
+        if (flipCard) {
+            flipCard.classList.add('flipped');
+        }
+    }, 100);
 }
 
-// เริ่มต้น
+function getCardName(value) {
+    const names = {
+        'A': 'ACE - เอซ',
+        'J': 'JACK - แจ็ค',
+        'Q': 'QUEEN - ควีน',
+        'K': 'KING - คิง'
+    };
+    return names[value] || value;
+}
+
+// ========== CONFETTI EFFECT ==========
+function createConfetti(...emojis) {
+    const container = document.body;
+
+    for (let i = 0; i < 30; i++) {
+        const confetti = document.createElement('div');
+        confetti.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        confetti.style.position = 'fixed';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.top = '-50px';
+        confetti.style.fontSize = (Math.random() * 30 + 20) + 'px';
+        confetti.style.zIndex = '9999';
+        confetti.style.pointerEvents = 'none';
+        confetti.style.transition = 'all 3s ease-out';
+
+        container.appendChild(confetti);
+
+        setTimeout(() => {
+            confetti.style.top = '100vh';
+            confetti.style.transform = `rotate(${Math.random() * 720}deg)`;
+            confetti.style.opacity = '0';
+        }, 100);
+
+        setTimeout(() => {
+            confetti.remove();
+        }, 3100);
+    }
+}
+
+// ========== INITIALIZATION ==========
 window.addEventListener('load', () => {
     showScreen('menu');
+    resetCards();
 });
